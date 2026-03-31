@@ -1,39 +1,52 @@
-# Hands-on AI: Homework 1 - E-commerce Machine Learning Pipeline
+# Hands-on AI - Homework 1: E-Commerce Revenue Prediction
 
 ## 1. Problem Description
-I chose the E-commerce domain to predict online shopper purchasing intention. [cite_start]This is a classification problem[cite: 226]. [cite_start]The target variable is `Revenue` (whether a customer made a purchase or not), which is highly useful for businesses to identify potential buyers and target them with promotions[cite: 227].
+For this project, I chose the E-commerce retail domain. The objective is to predict whether a website visitor will complete a purchase. [cite_start]This is a **classification problem**[cite: 226]. [cite_start]The target variable is `Revenue` (Boolean: True/False)[cite: 227]. [cite_start]Predicting this is highly useful for businesses, as it allows them to identify high-intent shoppers, optimize server resources, or target abandoning users with real-time discounts to save the sale[cite: 227].
 
 ## 2. Dataset Description
 * [cite_start]**Source:** OpenML "Online Shoppers Intention" dataset[cite: 231].
-* [cite_start]**Size:** Over 12,000 rows and 17 columns (exceeding the 8,000 row/8 column requirement)[cite: 231].
-* [cite_start]**Distribution:** Heavy class imbalance (approx. 85% False / 15% True for the target variable)[cite: 231].
+* [cite_start]**Size:** 12,330 rows and 18 columns, exceeding the minimum requirement of 8,000 rows and 8 columns[cite: 20].
+* [cite_start]**Features:** A mix of numerical features (e.g., `Administrative_Duration`, `BounceRates`, `PageValues`) and categorical features (e.g., `VisitorType`, `Month`, `OperatingSystems`)[cite: 26, 231].
+* **Target Distribution:** The dataset suffers from a heavy class imbalance. [cite_start]Approximately 85% of sessions ended without a purchase (`False`), while only 15% resulted in revenue (`True`)[cite: 231].
 
 ## 3. Preprocessing Approach
-* [cite_start]**Split First:** The data was split 80/10/10 using stratified splitting before any statistics were computed[cite: 233].
-* [cite_start]**Missing Values:** Numerical columns were filled with the median, categorical with the mode[cite: 232].
-* [cite_start]**Outliers:** Handled using the IQR method (Winsorizing/capping)[cite: 232].
-* [cite_start]**Encoding:** One-hot encoding was used for categorical features like Month and VisitorType[cite: 232].
-* [cite_start]**Scaling:** `StandardScaler` was fitted on the training data only, then applied to the validation and test sets[cite: 232].
+[cite_start]To prevent data leakage, the dataset was strictly split (80% Train, 10% Validation, 10% Test) **before** any preprocessing statistics were calculated[cite: 37, 242]. [cite_start]All following transformations were derived exclusively from the training set and subsequently applied to the validation and test sets[cite: 233, 243]:
+* [cite_start]**Missing Values:** Handled by computing the median for numerical columns (robust against skewness) and the mode for categorical columns[cite: 59, 60]. 
+* [cite_start]**Outliers:** Detected using the Interquartile Range (IQR) method and Winsorized (capped) at the upper and lower bounds to prevent extreme values from distorting the models[cite: 70, 75].
+* [cite_start]**Categorical Encoding:** Applied One-Hot Encoding to categorical variables with `drop_first=True` to avoid multicollinearity[cite: 82, 86].
+* [cite_start]**Scaling:** Applied `StandardScaler` to normalize the numerical ranges so features with larger magnitudes (like durations) wouldn't dominate the models[cite: 105]. [cite_start]The scaler was saved to `models/scaler.pkl`[cite: 244].
 
 ## 4. Feature Engineering
-[cite_start]Created two new features[cite: 234]:
-1. `Total_Duration`: Sum of Administrative, Informational, and ProductRelated duration (intuition: overall time engaged).
-2. `Average_Bounce_Exit`: Average of BounceRates and ExitRates (intuition: combined metric of likelihood to leave the site).
+[cite_start]Two new features were derived to encode domain knowledge[cite: 89, 90]:
+1. `Total_Duration`: The sum of `Administrative_Duration`, `Informational_Duration`, and `ProductRelated_Duration`. [cite_start]**Intuition:** Captures the total active time a user spent engaged with the website[cite: 234].
+2. `Average_Bounce_Exit`: The mean of `BounceRates` and `ExitRates`. [cite_start]**Intuition:** Creates a single, unified metric representing the user's likelihood to abandon the session[cite: 234].
 
-## 5. PCA Insights
-[cite_start]*(Open your `pca_scree_plot.png` and `pca_2d_scatter.png` images to write this part! Mention how many components it takes to reach high variance, and what the 2D plot looks like)*[cite: 235, 236].
+## 5. Exploratory PCA Insights
+[cite_start]After scaling, Principal Component Analysis (PCA) was performed[cite: 113].
+* [cite_start]**Scree Plot:** The explained variance ratio reveals that it takes several components to capture 90% of the dataset's variance, indicating that shopper behavior is complex and relies on a blend of multiple features[cite: 119, 235]. 
+* [cite_start]**Loadings:** Inspecting the components shows that metrics like `PageValues` and our engineered `Total_Duration` strongly dominate the first principal component (PC1)[cite: 120, 235].
+* [cite_start]**2D Projection:** The 2D scatter plot projection shows heavy overlapping between the two classes, visually confirming the difficulty of the classification task due to the extreme class imbalance[cite: 121, 236]. 
 
 ## 6. Model Comparison
-* **Random Forest:** Accuracy 83.62%, ROC-AUC 0.7871
-* **Neural Network:** Accuracy 84.83%, ROC-AUC 0.7903
-[cite_start]The Neural Network slightly outperformed the Random Forest[cite: 237]. Both models struggled with minority class recall due to the heavy 85/15 class imbalance. [cite_start]It is slightly surprising that the NN won, as tree-based models typically excel on small tabular datasets[cite: 238].
+[cite_start]Both models were evaluated on the strictly unseen 10% Test Set[cite: 173]. [cite_start]A baseline Neural Network (2 hidden layers, ReLU, Dropout, Early Stopping) was compared against a Tuned Random Forest (`RandomizedSearchCV` used to tune `n_estimators`, `max_depth`, and `min_samples_split`)[cite: 154, 158, 162, 214].
+
+| Metric | Tuned Random Forest | Neural Network |
+| :--- | :--- | :--- |
+| **Accuracy** | 83.86% | 85.24% |
+| **ROC-AUC** | 0.7941 | 0.7845 |
+| **Recall (True Buyers)** | 0.15 | 0.13 |
+
+[cite_start]While the Neural Network achieved a slightly higher raw accuracy, accuracy is heavily misleading on an 85/15 imbalanced dataset[cite: 177, 178]. [cite_start]The Tuned Random Forest achieved a noticeably higher **ROC-AUC score (0.7941)** and successfully recalled more actual buyers (15% vs 13%)[cite: 237]. 
+
+**Surprise Factor:** Given the dataset size, it is not entirely surprising that the tree-based model won. [cite_start]Classical ML algorithms—particularly Random Forests—consistently match or outperform simple deep learning models on tabular, categorical-heavy datasets[cite: 134, 238].
 
 ## 7. Best Model Designation
-[cite_start]Because it achieved a higher Accuracy and ROC-AUC score on the strict Test set, the Neural Network was designated as the best model and saved as `models/best_model.h5`[cite: 239].
+[cite_start]Due to its superior ROC-AUC score and better ability to handle the minority class, the **Tuned Random Forest** is designated as the winning model[cite: 197, 239]. [cite_start]It has been saved as `models/best_model.pkl` to be utilized in future assignments[cite: 198, 199, 244].
 
 ## 8. Installation & Execution
-```bash
-git clone <your-github-repo-url>
-cd hw1
-python -m pip install -r requirements.txt
-python main.py
+[cite_start]Follow these steps to reproduce the pipeline[cite: 240]:
+
+1. **Clone the repository:**
+   ```bash
+   git clone <YOUR_GITHUB_URL_HERE>
+   cd hw1
