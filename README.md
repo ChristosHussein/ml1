@@ -41,5 +41,5 @@ Follow these steps to run the pipeline:
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/ChristosHussein/ml1.git](https://github.com/ChristosHussein/ml1.git)
+   git clone https://github.com/ChristosHussein/ml1.git
    cd ml1
