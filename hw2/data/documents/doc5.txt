@@ -1,0 +1,1 @@
+(Visitor Types): "Returning visitors generally have a much higher conversion rate than new visitors. E-commerce sites track visitor types to tailor marketing strategies, offering loyalty discounts to returning users and welcome discounts to new ones."

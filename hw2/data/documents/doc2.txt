@@ -1,0 +1,1 @@
+(Cart Abandonment): "Cart abandonment occurs when a potential customer starts a checkout process for an online order but drops out of the process before completing the purchase. Common reasons include unexpected shipping costs and requiring account creation."

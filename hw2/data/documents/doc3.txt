@@ -1,0 +1,1 @@
+(Page Values): "Page Value is the average value for a page that a user visited before landing on the goal page or completing an Ecommerce transaction. A high Page Value indicates a page is highly influential in driving revenue."

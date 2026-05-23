@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pydantic
+langchain
+langchain-community
+langchain-google-genai
+langchain-chroma
+langgraph
+chromadb
+sentence-transformers
+pypdf
+pandas
+scikit-learn
+joblib
+python-dotenv

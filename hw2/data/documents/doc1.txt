@@ -1,0 +1,1 @@
+(Bounce Rate): "Bounce rate is a metric in web analytics. It represents the percentage of visitors who enter the site and then leave rather than continuing to view other pages. High bounce rates in e-commerce often indicate poor page load times or irrelevant content."
