@@ -42,7 +42,8 @@ The integration includes an advanced dynamic alignment script within `tools.py` 
 1. Clone the repository:
    ```bash
    git clone https://github.com/ChristosHussein/ml1.git
-   cd ml1/hw2
+   ```
+   ```cd ml1/hw2```
 2. Install the required dependencies:
 
 ```bash
