@@ -4,7 +4,7 @@
 This project introduces a domain-aware conversational AI agent built for the E-commerce sector. It acts as a bridge between users and complex e-commerce data. The agent can answer factual and conceptual questions about e-commerce (e.g., return rates, bounce rates, cart abandonment) using a Retrieval-Augmented Generation (RAG) system, make real-time predictions about customer purchase behavior using a pre-trained Machine Learning model from HW1, and perform domain-specific calculations (e.g., final price after tax and discounts). 
 
 ## 2. Architecture
-The system is built using **LangGraph** to orchestrate the autonomous decision-making of the agent. The core LLM used is Google's `gemini-3.1-flash-lite`, known for its speed and reasoning capabilities. 
+The system is built using **LangGraph** to orchestrate the autonomous decision-making of the agent. The core LLM used is Google's `gemini-3.1-flash-lite`.
 
 The agent has access to three tools:
 1. `knowledge_retriever_tool`: Queries a local ChromaDB vector store to answer theoretical questions.
