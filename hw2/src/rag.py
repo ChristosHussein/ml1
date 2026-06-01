@@ -31,8 +31,13 @@ def get_vector_store():
 
     print("Vector store not found. Building it now from data/documents/...")
     
-    # 1. Load all .txt files from the documents folder
-    loader = DirectoryLoader('data/documents', glob="**/*.txt", loader_cls=TextLoader)
+    # 1. Load all .txt files from the documents folder with UTF-8 encoding support
+    loader = DirectoryLoader(
+        'data/documents', 
+        glob="**/*.txt", 
+        loader_cls=TextLoader, 
+        loader_kwargs={"encoding": "utf-8"}
+    )
     documents = loader.load()
     
     if not documents:

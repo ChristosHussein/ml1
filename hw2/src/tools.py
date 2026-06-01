@@ -1,14 +1,22 @@
+import os
 import joblib
 import pandas as pd
 from langchain_core.tools import tool
 
-# Φορτώνουμε τα μοντέλα από το HW1
-try:
-    model = joblib.load("models/best_model.pkl")
-    scaler = joblib.load("models/scaler.pkl")
-    print("HW1 Models loaded successfully!")
-except Exception as e:
-    print(f"Warning: Could not load HW1 models. Error: {e}")
+# 1. Fail fast if the required HW1 models are missing
+MODEL_PATH = "models/best_model.pkl"
+SCALER_PATH = "models/scaler.pkl"
+
+if not os.path.exists(MODEL_PATH) or not os.path.exists(SCALER_PATH):
+    raise FileNotFoundError(
+        f"Missing HW1 artifacts! Ensure '{MODEL_PATH}' and '{SCALER_PATH}' exist. "
+        "Do not start this assignment without verifying that your HW1 artifacts load correctly."
+    )
+
+# Load models outside of a try-except so any incompatibility errors are raised immediately
+model = joblib.load(MODEL_PATH)
+scaler = joblib.load(SCALER_PATH)
+print("HW1 Models loaded successfully!")
 
 @tool
 def predict_purchase(

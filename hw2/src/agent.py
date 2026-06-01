@@ -14,7 +14,6 @@ load_dotenv()
 
 # Φορτώνουμε τα εργαλεία μας από τα άλλα αρχεία
 from src.rag import retrieve_knowledge
-from src.tools import predict_purchase
 from src.tools import predict_purchase, ecommerce_calculator
 
 # 1. Ορίζουμε την "Κατάσταση" (State) του Agent.
