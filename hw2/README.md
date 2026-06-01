@@ -4,7 +4,7 @@
 This project introduces a domain-aware conversational AI agent built for the E-commerce sector. It acts as a bridge between users and complex e-commerce data. The agent can answer factual and conceptual questions about e-commerce (e.g., return rates, bounce rates, cart abandonment) using a Retrieval-Augmented Generation (RAG) system, make real-time predictions about customer purchase behavior using a pre-trained Machine Learning model from HW1, and perform domain-specific calculations (e.g., final price after tax and discounts). 
 
 ## 2. Architecture
-The system is built using **LangGraph** to orchestrate the autonomous decision-making of the agent. The core LLM used is Google's `gemini-3.1-flash-lite`, known for its speed and reasoning capabilities. 
+The system is built using **LangGraph** to orchestrate the autonomous decision-making of the agent. The core LLM used is Google's `gemini-3.1-flash-lite`.
 
 The agent has access to three tools:
 1. `knowledge_retriever_tool`: Queries a local ChromaDB vector store to answer theoretical questions.
@@ -41,18 +41,37 @@ The integration includes an advanced dynamic alignment script within `tools.py` 
 
 1. Clone the repository:
    ```bash
-   git clone <your-repo-url>
-   cd <your-repo-folder>
-   Install the required dependencies:
-   pip install -r requirements.txt
-   Set up your environment variables by creating a .env file in the root directory:
-   GOOGLE_API_KEY=your_gemini_api_key_here
-   Start the FastAPI server:
-   python main.py
-   Access the interactive Swagger UI at: http://127.0.0.1:8000/docs
-   You can test the standard /chat endpoint using curl:
-   curl -X 'POST' \
-  '[http://127.0.0.1:8000/chat](http://127.0.0.1:8000/chat)' \
+   git clone https://github.com/ChristosHussein/ml1.git
+   ```
+   ```bash
+    cd ml1/hw2
+   ```
+3. Install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Set up your environment variables by creating a .env file in the root directory:
+
+```Plaintext
+GOOGLE_API_KEY=your_gemini_api_key_here
+```
+
+4. Start the FastAPI server:
+
+```Bash
+python main.py
+```
+5. Access the interactive Swagger UI at: http://127.0.0.1:8000/docs
+
+
+## 7. Example API Call
+You can test the standard /chat endpoint using curl:
+
+Bash
+curl -X 'POST' \
+  'http://127.0.0.1:8000/chat' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -60,8 +79,10 @@ The integration includes an advanced dynamic alignment script within `tools.py` 
   "session_id": "user_123"
 }'
 For the Bonus SSE streaming endpoint, use:
+
+Bash
 curl -N -X 'POST' \
-  '[http://127.0.0.1:8000/chat/stream](http://127.0.0.1:8000/chat/stream)' \
+  'http://127.0.0.1:8000/chat/stream' \
   -H 'accept: text/event-stream' \
   -H 'Content-Type: application/json' \
   -d '{
