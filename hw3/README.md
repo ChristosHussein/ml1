@@ -1,22 +1,22 @@
 # Multi-Tool Agentic AI System with LangGraph
 
-A fully routed multi-agent workspace built using LangGraph, LangChain, and Gemini. [cite_start]This system dynamically interprets user intent to direct queries across web search tools, an internal RAG knowledge base, a relational SQL database, or a baseline weather simulator, while maintaining complete conversation persistence across sessions[cite: 3, 4].
+A fully routed multi-agent workspace built using LangGraph, LangChain, and Gemini. This system dynamically interprets user intent to direct queries across web search tools, an internal RAG knowledge base, a relational SQL database, or a baseline weather simulator, while maintaining complete conversation persistence across sessions[cite: 3, 4].
 
 ---
 
 ## 1. System Overview
 
-[cite_start]The application follows a central hub-and-spoke multi-agent architecture orchestrated entirely via LangGraph[cite: 3, 4, 111]. 
+The application follows a central hub-and-spoke multi-agent architecture orchestrated entirely via LangGraph[cite: 3, 4, 111]. 
 
 ### Node Connectivity & Workflow
 1. **START Entry Node**: Receives incoming conversation frames.
-2. **Intent Router (`route_intent`)**: Performs structured few-shot classification at `temperature=0` to evaluate user intention. [cite_start]It maps inputs directly to one of 5 dedicated downstream processing nodes using conditional branching[cite: 60, 62, 70, 71].
+2. **Intent Router (`route_intent`)**: Performs structured few-shot classification at `temperature=0` to evaluate user intention. It maps inputs directly to one of 5 dedicated downstream processing nodes using conditional branching[cite: 60, 62, 70, 71].
 3. **Execution Nodes**:
-   - [cite_start]`search`: Executes a live Tavily Web Search and answers strictly using external references[cite: 10, 13, 15].
-   - [cite_start]`rag`: Queries a local vector repository to provide document-grounded context[cite: 22, 27, 30].
-   - [cite_start]`sql`: Compiles, validates, and runs secure, read-only queries against database tables[cite: 41, 51].
-   - [cite_start]`weather`: Returns local baseline simulation statistics[cite: 6].
-   - [cite_start]`general`: Manages greetings, casual dialog, and context summaries[cite: 6].
+   - `search`: Executes a live Tavily Web Search and answers strictly using external references[cite: 10, 13, 15].
+   - `rag`: Queries a local vector repository to provide document-grounded context[cite: 22, 27, 30].
+   - `sql`: Compiles, validates, and runs secure, read-only queries against database tables[cite: 41, 51].
+   - `weather`: Returns local baseline simulation statistics[cite: 6].
+   - `general`: Manages greetings, casual dialog, and context summaries[cite: 6].
 4. **END Exit Node**: Captures output and safely concludes execution steps.
 
 The structured graph routing topology is illustrated below:
@@ -31,8 +31,8 @@ The structured graph routing topology is illustrated below:
 Ensure you have Python 3.11+ installed.
 
 ### Installation
-1. [cite_start]Clone the repository and navigate into the project directory.
-2. [cite_start]Install the necessary system dependencies:
+1. Clone the repository and navigate into the project directory.
+2. Install the necessary system dependencies:
    ```bash
    pip install -r requirements.txt
    pip install langchain-google-genai langchain-huggingface pypdf
