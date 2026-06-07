@@ -20,6 +20,7 @@ A fully routed multi-agent workspace built using LangGraph, LangChain, and Gemin
 4. **END Exit Node**: Captures output and safely concludes execution steps.
 
 The structured graph routing topology is illustrated below:
+
 ![System Architecture Graph](results/graph.png)
 
 ---
