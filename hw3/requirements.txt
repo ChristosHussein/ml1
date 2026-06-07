@@ -1,0 +1,9 @@
+langgraph>=0.0.10
+langchain-core
+langchain-community
+langchain-openai
+tavily-python
+chromadb>=0.4.0
+sentence-transformers
+pydantic>=2.0
+python-dotenv
