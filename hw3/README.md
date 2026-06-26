@@ -1,5 +1,18 @@
 # Multi-Tool Agentic AI System with LangGraph
 
+> [!IMPORTANT]
+> **Grading Declaration**
+> As per the latest announcement, the following breakdown applies to this submission:
+> 
+> **Features for Normal Grading (2/5):**
+> - Feature 4: Intent Router (Highly robust context-aware router)
+> - Feature 2: RAG Retrieval Agent (ChromaDB + Local Embeddings)
+> 
+> **Features for Bonus Grading (3/5):**
+> - Feature 1: Web Search Agent (Implemented via Tavily API)
+> - Feature 3: Text-to-SQL Agent (Including strict safety checks)
+> - Feature 5: Conversation Memory & Persistence (SQLite backing)
+
 A fully routed multi-agent workspace built using **LangGraph**, **LangChain**, and **Gemini**. This system dynamically interprets user intent to direct queries across web search tools, an internal RAG knowledge base, a relational SQL database, or a baseline weather simulator — while maintaining complete conversation persistence across sessions.
 
 ---
