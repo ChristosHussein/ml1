@@ -1,5 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from src.tools.search_tool import get_search_tool
 
 def search_agent_node(state: dict) -> dict:
@@ -13,13 +13,30 @@ def search_agent_node(state: dict) -> dict:
         return {"messages": [AIMessage(content="No query provided to the search agent.")]}
     
     user_query = messages[-1].content
+    llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0.2)
+    
+    # Contextualize query if there is history
+    search_query = user_query
+    if len(messages) > 1:
+        context_prompt = (
+            "Given the conversation history and the latest user query, "
+            "formulate a standalone web search query that can be understood without context.\n"
+            "Return ONLY the search query string, nothing else."
+        )
+        try:
+            search_query_content = llm.invoke([SystemMessage(content=context_prompt)] + messages).content
+            if isinstance(search_query_content, list):
+                search_query_content = search_query_content[0].get("text", str(search_query_content))
+            search_query = search_query_content.strip()
+        except Exception:
+            pass
     
     # Initialize the search tool
     search_tool = get_search_tool()
     
     try:
         # Execute the search
-        search_results = search_tool.invoke({"query": user_query})
+        search_results = search_tool.invoke({"query": search_query})
     except Exception as e:
         search_results = []
     
@@ -29,7 +46,7 @@ def search_agent_node(state: dict) -> dict:
         return {"messages": [AIMessage(content=fallback_msg)]}
     
 
-    llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0.2)
+
     
     # Format context for the LLM prompt
     context_str = ""
@@ -55,9 +72,9 @@ def search_agent_node(state: dict) -> dict:
     )
     
     # Run the model
-    response = llm.invoke([
-        HumanMessage(content=system_prompt),
-        HumanMessage(content=f"User Question: {user_query}")
-    ])
+    prompt_messages = [SystemMessage(content=system_prompt)] + messages
+    response_content = llm.invoke(prompt_messages).content
+    if isinstance(response_content, list):
+        response_content = response_content[0].get("text", str(response_content))
     
-    return {"messages": [AIMessage(content=response.content)]}  
+    return {"messages": [AIMessage(content=response_content)]}  

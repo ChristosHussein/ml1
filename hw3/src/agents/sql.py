@@ -23,13 +23,19 @@ def sql_agent_node(state: dict) -> dict:
         "Columns: employee_id (INTEGER, PK), first_name (TEXT), last_name (TEXT), department_id (INTEGER, FK), salary (REAL), hire_date (TEXT)\n"
     )
     
+    history_str = "\n".join([f"{'User' if msg.type == 'human' else 'Assistant'}: {msg.content}" for msg in messages])
+    
     generation_prompt = (
-        f"Based on the database schema below, write a raw SQLite query to answer: '{user_query}'\n"
+        f"Based on the database schema below and the following conversation history, write a raw SQLite query to answer the user's latest question.\n"
         "Return ONLY the plain SQL text query. Do not wrap it in markdown code blocks like ```sql.\n\n"
-        f"Schema:\n{db_schema_context}"
+        f"Schema:\n{db_schema_context}\n\n"
+        f"Conversation History:\n{history_str}"
     )
     
-    generated_response = llm.invoke(generation_prompt).content.strip()
+    generated_content = llm.invoke(generation_prompt).content
+    if isinstance(generated_content, list):
+        generated_content = generated_content[0].get("text", str(generated_content))
+    generated_response = generated_content.strip()
     
     # SAFELY clean up trailing backticks without breaking Python string literals
     generated_sql = generated_response.replace("```sql", "").replace("```", "").strip()
@@ -54,12 +60,15 @@ def sql_agent_node(state: dict) -> dict:
         
     # 4. GENERATE NATURAL-LANGUAGE ANSWER STEP
     synthesis_prompt = (
-        "Translate the following raw database execution rows into a concise, professional explanation answering the user's initial question.\n\n"
-        f"User Question: {user_query}\n"
+        "Translate the following raw database execution rows into a concise, professional explanation answering the user's question, given the conversation context.\n\n"
         f"SQL Query Executed: {generated_sql}\n"
         f"Columns: {query_result['columns']}\n"
         f"Rows: {query_result['rows']}"
     )
     
-    final_answer = llm.invoke(synthesis_prompt).content
+    from langchain_core.messages import SystemMessage
+    prompt_messages = [SystemMessage(content=synthesis_prompt)] + messages
+    final_answer = llm.invoke(prompt_messages).content
+    if isinstance(final_answer, list):
+        final_answer = final_answer[0].get("text", str(final_answer))
     return {"messages": [AIMessage(content=final_answer)]}  

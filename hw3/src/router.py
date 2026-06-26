@@ -41,7 +41,7 @@ def route_intent(state: dict) -> str:
     try:
         decision = structured_llm.invoke([
             SystemMessage(content=system_prompt),
-            HumanMessage(content=last_user_message)
+            *messages
         ])
         
         # Guard rail fallback for safety
